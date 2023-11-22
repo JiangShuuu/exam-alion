@@ -35,7 +35,7 @@ const VideoListStyled = styled.div`
     }
   }
 `
-
+const APIURL = import.meta.env.VITE_APIURL
 export default function VideoList() {
   const [videos, setVideos] = useState<VideoType[]>([])
   const [mute, setMute] = useState<boolean>(true)
@@ -43,9 +43,7 @@ export default function VideoList() {
 
   const getVideos = async () => {
     try {
-      const res: AxiosResponse<ApiResponseType> = await axios.get(
-        'http://localhost:8088/for_you_list'
-      )
+      const res: AxiosResponse<ApiResponseType> = await axios.get(`${APIURL}for_you_list`)
       setVideos(res.data.items)
     } catch (err: unknown) {
       console.log(err)

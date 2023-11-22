@@ -198,6 +198,14 @@ const Video = ({
     }
   }
 
+  const progressUpdate = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!videoRef.current) return
+    const value = +e.target.value
+    const time = videoRef.current?.duration * (value / 100)
+    setVideoTime(value)
+    videoRef.current.currentTime = time
+  }
+
   useEffect(() => {
     const currentVideoRef = videoRef.current
     const observer = new IntersectionObserver(
@@ -350,13 +358,7 @@ const Video = ({
           min="0"
           max="100"
           value={videoTime}
-          onChange={(e) => {
-            if (!videoRef.current) return
-            const value = +e.target.value
-            const time = videoRef.current?.duration * (value / 100)
-            setVideoTime(value)
-            videoRef.current.currentTime = time
-          }}
+          onChange={progressUpdate}
         ></input>
       </div>
     </VideoStyled>
