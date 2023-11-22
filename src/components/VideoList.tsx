@@ -4,6 +4,8 @@ import type { VideoType } from '../../types/Video'
 import axios, { AxiosResponse } from 'axios'
 import { toast } from 'react-hot-toast'
 import Video from './Video'
+import InfiniteScroll from 'react-infinite-scroll-component'
+import Loading from './Loading'
 
 type ApiResponseType = {
   items: VideoType[]
@@ -37,7 +39,7 @@ const VideoListStyled = styled.div`
 export default function VideoList() {
   const [videos, setVideos] = useState<VideoType[]>([])
   const [mute, setMute] = useState<boolean>(true)
-
+  const [playingVideo, setPlayingVideo] = useState<string | null>(null)
 
   const getVideos = async () => {
     try {
@@ -55,11 +57,39 @@ export default function VideoList() {
     getVideos()
   }, [])
 
+  useEffect(() => {
+    setPlayingVideo(videos?.length ? videos[0].title : null)
+  }, [videos])
+
   return (
     <VideoListStyled className="container">
-        {videos.map((video) => (
-          <Video key={video.title} video={video} mute={mute} setMute={setMute} />
-        ))}
+      {videos.length ? (
+        <InfiniteScroll
+          dataLength={videos.length}
+          next={() => {}}
+          hasMore={true}
+          loader={<Loading />}
+          endMessage={<p className="end-message">bottom</p>}
+          onScroll={() => {
+            scrollBy(0, -1)
+          }}
+          className="video-list"
+        >
+          {playingVideo &&
+            videos.map((video) => (
+              <Video
+                key={video.title}
+                video={video}
+                mute={mute}
+                setMute={setMute}
+                playingVideo={playingVideo}
+                setPlayingVideo={setPlayingVideo}
+              />
+            ))}
+        </InfiniteScroll>
+      ) : (
+        <Loading />
+      )}
     </VideoListStyled>
   )
 }

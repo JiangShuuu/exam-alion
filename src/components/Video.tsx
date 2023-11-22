@@ -43,8 +43,8 @@ const VideoStyled = styled.div`
       position: absolute;
       width: 100%;
       height: 100%;
-      top: 0;
-      left: 0;
+      top: 0px;
+      left: 0px;
     }
     .progressBar {
       width: 100%;
@@ -177,13 +177,17 @@ const Video = ({
   video,
   mute,
   setMute,
+  playingVideo,
+  setPlayingVideo
 }: {
   video: VideoType
   mute: boolean
   setMute: React.Dispatch<React.SetStateAction<boolean>>
+  playingVideo: string | null
+  setPlayingVideo: React.Dispatch<React.SetStateAction<string | null>>
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null)
-  const [play, setPlay] = useState(true)
+  const [play, setPlay] = useState(video.title === playingVideo)
   const [videoTime, setVideoTime] = useState<number>(0)
 
   const updateTime = (e: React.SyntheticEvent<HTMLVideoElement, Event>) => {
@@ -193,6 +197,40 @@ const Video = ({
       setVideoTime(time)
     }
   }
+
+  useEffect(() => {
+    const currentVideoRef = videoRef.current
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (
+            entry.isIntersecting &&
+            entry.target.id !== playingVideo &&
+            (entry.target as HTMLVideoElement)?.paused
+          ) {
+            setPlay(true)
+            setPlayingVideo(entry.target.id)
+            return
+          }
+          if (!entry.isIntersecting) {
+            setPlay(false)
+            return
+          }
+        })
+      },
+      {
+        threshold: 0.5
+      }
+    )
+    if (currentVideoRef) {
+      observer.observe(currentVideoRef)
+    }
+    return () => {
+      if (currentVideoRef) {
+        observer.unobserve(currentVideoRef)
+      }
+    }
+  }, [playingVideo, setPlayingVideo])
 
   useEffect(() => {
     const hls = new Hls()
@@ -232,7 +270,6 @@ const Video = ({
     }
   }, [play])
 
-
   return (
     <VideoStyled>
       <div className="video selected">
@@ -242,7 +279,7 @@ const Video = ({
           id={video.title}
           autoFocus
           autoPlay={play}
-          loop={true}
+          loop={video.title === playingVideo}
           onClick={(event) => {
             event.stopPropagation()
             setPlay(!play)
