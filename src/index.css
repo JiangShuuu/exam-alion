@@ -1,68 +1,67 @@
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+:root{
+    --light-color: 241 241 241;
+    --dark-color: 15 15 15;
+    --primary-color: 255 0 0;
+    --secondary-color: 62 166 255;
+    --success-color: 3 179 10;
+    --like-color: 16 110 190;
+    --font-poppins: 'Poppins', system-ui, sans-serif;
+    scroll-behavior: smooth;
   }
-  a:hover {
-    color: #747bff;
+  ::-webkit-scrollbar {
+    width: 0;
+  }
+  html {
+    color-scheme: dark;
+  }
+  html, body {
+    overflow-x: hidden;
+  }
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: var(--font-poppins);
+    outline: none;
+  }
+  body {
+    position: relative;
+    background-color: rgb(var(--dark-color));
+    color: rgb(var(--light-color));
+  }
+  .container {
+    margin-inline: auto;
+    width: min(90%, 70rem);
+  }
+  a {
+    text-decoration: none;
+    color: inherit;
+    transition: 0.15s;
+  }
+  input{
+    background-color: transparent;
   }
   button {
-    background-color: #f9f9f9;
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    user-select: none;
   }
-}
+  & span.loader {
+    margin-bottom: 2rem;
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid #FFF;
+    border-bottom-color: rgb(var(--dark-color));
+    border-radius: 50%;
+    display: inline-block;
+    animation: rotation 1s linear infinite;
+  }
+  @keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+  }
