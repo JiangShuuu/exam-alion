@@ -75,7 +75,7 @@ export default function VideoList() {
           }}
           className="video-list"
         >
-           {playingVideo &&
+          {playingVideo &&
             videos.map((video) => (
               <Video
                 key={video.title}
