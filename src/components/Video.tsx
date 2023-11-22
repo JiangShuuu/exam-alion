@@ -45,6 +45,7 @@ const VideoStyled = styled.div`
       height: 100%;
       top: 0px;
       left: 0px;
+      z-index: 10;
     }
     .progressBar {
       width: 100%;
@@ -68,6 +69,7 @@ const VideoStyled = styled.div`
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
+      z-index: 30;
       button {
         border-radius: 50%;
         width: 2.5rem;
