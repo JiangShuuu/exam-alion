@@ -1,7 +1,8 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { styled } from 'styled-components'
 import { VideoType } from '../../types/Video'
 import { IoMdPause, IoMdPlay, IoMdVolumeHigh, IoMdVolumeOff } from 'react-icons/io'
+import Hls from 'hls.js'
 
 const VideoStyled = styled.div`
   display: flex;
@@ -193,6 +194,45 @@ const Video = ({
     }
   }
 
+  useEffect(() => {
+    const hls = new Hls()
+    const url = video.play_url
+
+    if (play && videoRef.current) {
+      // 如果當前時間大於 0 則不重新載入
+      if (videoRef.current.currentTime > 0) {
+        videoRef.current?.play()
+        return
+      }
+
+      // init
+      if (Hls.isSupported()) {
+        hls.attachMedia(videoRef.current)
+        hls.on(Hls.Events.MEDIA_ATTACHED, function () {
+          hls.loadSource(url)
+
+          hls.on(Hls.Events.MANIFEST_PARSED, () => {
+            videoRef.current?.play().catch(() => console.log('err'))
+          })
+        })
+        // 若為 mobile 則直接播, 但目前只吃 https
+      } else if (videoRef.current.canPlayType('application/vnd.apple.mpegurl')) {
+        videoRef.current.src = video.play_url
+        videoRef.current.play()
+      }
+      return
+    }
+
+    videoRef.current?.pause()
+
+    return () => {
+      if (hls != null) {
+        hls.destroy()
+      }
+    }
+  }, [play])
+
+
   return (
     <VideoStyled>
       <div className="video selected">
@@ -210,6 +250,18 @@ const Video = ({
           onTimeUpdate={updateTime}
           muted={mute}
         />
+        {/* 暫停遮罩 */}
+        {!play && (
+          <img
+            src={video.cover}
+            className="imgpost"
+            alt="Poster"
+            onClick={(event) => {
+              event.stopPropagation()
+              setPlay(true)
+            }}
+          />
+        )}
         <div className="video-actions">
           <div className="play-pause">
             {play ? (
