@@ -276,7 +276,7 @@ const Video = ({
         hls.destroy()
       }
     }
-  }, [play])
+  }, [play, video.play_url])
 
   return (
     <VideoStyled>
